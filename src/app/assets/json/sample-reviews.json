@@ -1,0 +1,67 @@
+{
+    "tweets": [
+        {
+            "username": "Max Lynch",
+            "handle": "maxlynch",
+            "like": 446,
+            "retweets": 173,
+            "response": 21,
+            "text": "By far the top DEX on @0xPolygon. Trade, stake, earn all in one place. You can't go wrong with this",
+            "date": "1633734753",
+            "liked": true,
+            "retweet": false,
+            "attachment": "https://devdactic.fra1.digitaloceanspaces.com/twitter-ui/attachement-0.jpeg",
+            "img": "https://devdactic.fra1.digitaloceanspaces.com/twitter-ui/twitter-max.jpg"
+        },
+        {
+            "username": "Solomon Grimm",
+            "handle": "grimSon",
+            "like": 14,
+            "retweets": 2,
+            "response": 6,
+            "liked": true,
+            "retweet": true,
+            "text": "Want to stay up to date with @Chedda_Crypto? Join the Chedda Leaderboard to win NFTs 🔥 https://chedda.store #chedda @chedda_crypto",
+            "date": "1634080353",
+            "attachment": "https://devdactic.fra1.digitaloceanspaces.com/twitter-ui/attachement-1.jpeg",
+            "img": "https://devdactic.fra1.digitaloceanspaces.com/twitter-ui/twitter-simon.jpg"
+        },
+        {
+            "username": "The Godfather",
+            "handle": "darth_the_vader",
+            "like": 1337,
+            "retweets": 529,
+            "response": 36,
+            "liked": false,
+            "retweet": true,
+            "text": "🎉 Mainnet is (finally) here! Time to start stacking that Chedda XP. Time for FOMO is now!<br> 👇",
+            "link": "https://ionicframework.com/blog/announcing-ionic-vue/",
+            "date": "1634339553",
+            "img": "https://devdactic.fra1.digitaloceanspaces.com/twitter-ui/twitter-ionic.jpg"
+        },
+        {
+            "username": "Benny Bossy",
+            "handle": "BigBossMan",
+            "like": 106,
+            "retweets": 28,
+            "response": 12,
+            "liked": false,
+            "retweet": false,
+            "text": "This review was long overdue. If you're into DeFi, you should definitely check out this dapp!",
+            "date": "1634857920",
+            "img": "https://devdactic.fra1.digitaloceanspaces.com/twitter-ui/twitter-ben.jpg"
+        },
+        {
+            "username": "Matt Nekow",
+            "handle": "dotNetkow",
+            "like": 45,
+            "retweets": 3,
+            "response": 13,
+            "liked": true,
+            "retweet": true,
+            "text": "This is an exciting time for this project. I'm happy to see these future launches in the coming months:<br> - Avalanche (AVAX) <br>- Fanton (FTM)<br>- Harmony ONE (ONE)<br>- IoTeX (IOTX)<br>- Polygon (MATIC)<br>- Near Protocol (NEAR) <br>- Oasis (ROSE) ",
+            "date": "1637536320",
+            "img": "https://devdactic.fra1.digitaloceanspaces.com/twitter-ui/twitter-matt.jpg"
+        }
+    ]
+}
