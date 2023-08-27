@@ -1,13 +1,16 @@
-import { ethers } from 'ethers';
-import CheddaBaseTokenVault from '../artifacts/CheddaBaseTokenVault.json';
-import { ENVIRONMENT } from '../constants';
-import { useAccount } from './useAccount';
-import useStaticJsonRPC from './useStaticJsonRPC';
+import { ethers } from "ethers";
+import CheddaBaseTokenVault from "../artifacts/CheddaBaseTokenVault.json";
+import { ENVIRONMENT } from "../constants";
+// import { useAccount } from './useAccount';
+// import useStaticJsonRPC from "./useStaticJsonRPC";
 
 export const useCheddaBaseTokenVault = () => {
-  const localProvider = useStaticJsonRPC([ENVIRONMENT.jsonRpcUrl]);
+  const localProvider = new ethers.providers.StaticJsonRpcProvider(
+    ENVIRONMENT.jsonRpcUrl
+  );
 
-  const { signer } = useAccount();
+  // const { signer } = useAccount();
+  const signer = null;
   const depositAsset = async (contract, amount, toAccount) => {
     return await contract.connect(signer).deposit(amount, toAccount);
   };
@@ -20,14 +23,18 @@ export const useCheddaBaseTokenVault = () => {
     return await contract.connect(signer).addCollateral(token, amount);
   };
 
-  const getVaultStats = async contract => {
+  const getVaultStats = async (contract) => {
     return await contract.getVaultStats();
   };
 
   // Implement other functions in a similar manner
 
-  const contractAt = address => {
-    return new ethers.Contract(address, CheddaBaseTokenVault.abi, localProvider);
+  const contractAt = (address) => {
+    return new ethers.Contract(
+      address,
+      CheddaBaseTokenVault.abi,
+      localProvider
+    );
   };
 
   return {

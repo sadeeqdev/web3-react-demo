@@ -1,12 +1,14 @@
-import React, { useEffect, useMemo } from 'react';
-import { ethers } from 'ethers';
-import MultiAssetPriceOracle from '../artifacts/MultiAssetPriceOracle.json';
-import { ENVIRONMENT } from '../constants';
-import useStaticJsonRPC from './useStaticJsonRPC';
+import React, { useEffect, useMemo } from "react";
+import { ethers } from "ethers";
+import MultiAssetPriceOracle from "../artifacts/MultiAssetPriceOracle.json";
+import { ENVIRONMENT } from "../constants";
+// import useStaticJsonRPC from "./useStaticJsonRPC";
 
 export const usePriceOracle = () => {
   const environment = ENVIRONMENT;
-  const localProvider = useStaticJsonRPC([ENVIRONMENT.jsonRpcUrl]);
+  const localProvider = new ethers.providers.StaticJsonRpcProvider(
+    ENVIRONMENT.jsonRpcUrl
+  );
 
   const oracleContract = useMemo(() => {
     const priceFeedAddress = environment.config.contracts.PriceFeed;

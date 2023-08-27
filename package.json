@@ -9,13 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@web3-react/core": "^8.2.2",
+    "@web3-react/metamask": "^8.2.3",
+    "@web3-react/types": "^8.2.2",
     "autoprefixer": "10.4.15",
-    "ethers": "^6.7.1",
+    "bufferutil": "^4.0.7",
+    "ethers": "5.7.2",
     "next": "13.4.19",
     "postcss": "8.4.28",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "sass": "^1.66.1",
-    "tailwindcss": "3.3.3"
+    "tailwindcss": "3.3.3",
+    "utf-8-validate": "^6.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "20.5.6",
+    "@types/react": "18.2.21",
+    "typescript": "5.2.2"
   }
 }

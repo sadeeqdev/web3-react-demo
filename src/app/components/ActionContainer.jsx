@@ -1,8 +1,10 @@
+"use-client";
 import React, { useState, useEffect, useCallback } from "react";
 import { ethers } from "ethers";
 import { ENVIRONMENT } from "../constants";
 import CoinLogo from "../assets/logos/usdc-logo.png";
 import Image from "next/image";
+import { useVaultStats } from "../hooks/useVaultStats";
 
 function formatCurrency(value) {
   if (typeof value !== "number") {
@@ -36,6 +38,8 @@ export const ActionContainer = () => {
   const switchDepositCheddaTab = (isDeposit) => {
     setIsDepositCheddaTab(isDeposit);
   };
+  const { pools } = useVaultStats();
+  console.log("pools", pools);
 
   // const { pools } = useVaultStats();
 
@@ -282,7 +286,7 @@ export const ActionContainer = () => {
               </div>
               <div>{formatCurrency(parseFloat(utilizationRate))}%</div>
               <div>{formatCurrency(parseFloat(depositApy))}%</div>
-              <div>{parseFloat(rewardsApy)?.toFixed(3)}%</div>
+              <div>{pools[0]?.stats?.utilization}%</div>
             </div>
           </div>
         </div>
