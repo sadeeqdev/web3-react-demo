@@ -3,6 +3,7 @@ import OasisLogo from "../assets/logos/wrose-logo.png";
 import PolygonLogo from "../assets/logos/matic-logo.png";
 import ArrowDown from "../assets/icon/arrow-down.svg";
 import Image from "next/image";
+import { ENVIRONMENT } from "../constants";
 
 export const NetworkMenu = () => {
   const [isOpenNetworkMenu, setIsOpenNetworkMenu] = useState(false);
@@ -59,9 +60,11 @@ export const NetworkMenu = () => {
             src={env.config.ui.logo}
             alt="Logo"
             className="w-6 h-6 lg:h-7 lg:w-7"
+            width={24}
+            height={24}
           />
         </div>
-        <div>{env.config.ui.chainName}</div>
+        <div>{ENVIRONMENT.config.ui.chainName}</div>
         <div>
           <Image src={ArrowDown} alt="Arrow" className="w-2.5 h-2.5" />
         </div>
@@ -87,6 +90,8 @@ export const NetworkMenu = () => {
                 src={network.icon}
                 alt={`${network.name} Icon`}
                 className="w-6 h-6 lg:h-7 lg:w-7"
+                width={24}
+                height={24}
               />
               {network.name}
             </li>

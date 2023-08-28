@@ -1,6 +1,8 @@
 import { ethers } from "ethers";
 import CheddaBaseTokenVault from "../artifacts/CheddaBaseTokenVault.json";
 import { ENVIRONMENT } from "../constants";
+import { hooks } from "../connectors/metaMask";
+
 // import { useAccount } from './useAccount';
 // import useStaticJsonRPC from "./useStaticJsonRPC";
 
@@ -8,9 +10,16 @@ export const useCheddaBaseTokenVault = () => {
   const localProvider = new ethers.providers.StaticJsonRpcProvider(
     ENVIRONMENT.jsonRpcUrl
   );
-
-  // const { signer } = useAccount();
-  const signer = null;
+  const {
+    useChainId,
+    useAccounts,
+    useIsActivating,
+    useIsActive,
+    useProvider,
+    useENSNames,
+  } = hooks;
+  const provider = useProvider();
+  const signer = provider?.getSigner?.();
   const depositAsset = async (contract, amount, toAccount) => {
     return await contract.connect(signer).deposit(amount, toAccount);
   };

@@ -2,13 +2,13 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import CheddaLogo from "../assets/logos/app-logo.svg";
-import { ConnectButton } from "./ConnectButton";
-import { NetworkMenu } from "./NetworkMenu";
 import ProfileMenu from "./ProfileMenu";
 import Image from "next/image";
+import { ConnectButton } from "./ConnectButton";
+import { NetworkMenu } from "./NetworkMenu";
 import { WalletModal } from "./WalletModal";
-
-const address = false;
+import { hooks } from "../connectors/metaMask";
+const { useAccounts } = hooks;
 
 const menuItems = [
   {
@@ -36,6 +36,9 @@ const menuItems = [
 const HeaderComponent = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const accounts = useAccounts();
+
+  const address = accounts?.[0];
 
   useEffect(() => {
     const handleScroll = () => {

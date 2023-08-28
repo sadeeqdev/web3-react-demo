@@ -58,7 +58,7 @@ export const useVaultStats = () => {
     };
 
     loadVaultStats();
-  }, [getAssetPrice, contractAt, getVaultStats, environment]);
+  }, []);
 
   return {
     pools,

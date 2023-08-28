@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@web3-react/core": "^8.2.2",
+    "@web3-react/gnosis-safe": "^8.2.3",
     "@web3-react/metamask": "^8.2.3",
     "@web3-react/types": "^8.2.2",
+    "@web3-react/walletconnect-v2": "^8.5.0",
     "autoprefixer": "10.4.15",
     "bufferutil": "^4.0.7",
     "ethers": "5.7.2",

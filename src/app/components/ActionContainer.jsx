@@ -1,26 +1,29 @@
 "use-client";
 import React, { useState, useEffect, useCallback } from "react";
-import { ethers } from "ethers";
-import { ENVIRONMENT } from "../constants";
 import CoinLogo from "../assets/logos/usdc-logo.png";
 import Image from "next/image";
-import { useVaultStats } from "../hooks/useVaultStats";
+import { ethers } from "ethers";
+import { ENVIRONMENT } from "../constants";
+import { hooks } from "../connectors/metaMask";
+import { useToken } from "../hooks/useToken";
+import { useCheddaBaseTokenVault } from "../hooks/useCheddaBaseTokenVault";
 
 function formatCurrency(value) {
   if (typeof value !== "number") {
-    return ""; // Return empty string if value is not a number
+    return "";
   }
   return value.toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+const pool = {
+  asset: {
+    logo: CoinLogo,
+    name: "USDC",
+  },
+};
+
 export const ActionContainer = () => {
   const [isDepositCheddaTab, setIsDepositCheddaTab] = useState(true);
-  const pool = {
-    asset: {
-      logo: CoinLogo,
-      name: "USDC",
-    },
-  };
   const assetSymbol = "USDC";
   const vaultTokenSymbol = "Chedda";
   const assetName = "USD Coin";
@@ -38,60 +41,70 @@ export const ActionContainer = () => {
   const switchDepositCheddaTab = (isDeposit) => {
     setIsDepositCheddaTab(isDeposit);
   };
-  const { pools } = useVaultStats();
-  console.log("pools", pools);
+  const { contractAt, getVaultStats, depositAsset, redeem } =
+    useCheddaBaseTokenVault();
+  const { approve, balanceOf, totalSupply, tokenContractAt } = useToken();
+  const { useAccounts } = hooks;
 
-  // const { pools } = useVaultStats();
+  const accounts = useAccounts();
 
-  // const loadVaultStats = useCallback(async () => {
-  //   try {
-  //     const vaultContract = contractAt(ENVIRONMENT.config.pools[0].address);
-  //     setVaultContract(vaultContract);
-  //     const stats = await getVaultStats(vaultContract);
-  //     console.log("vaultContract", stats);
+  const loadVaultStats = useCallback(async () => {
+    console.log("accounts", accounts);
+    console.log("accounts 1", accounts?.[0]);
+    try {
+      const vaultContract = contractAt(ENVIRONMENT.config.pools[0].address);
+      setVaultContract(vaultContract);
+      const stats = await getVaultStats(vaultContract);
+      console.log("vaultContract", stats);
 
-  //     setUtilizationRate(ethers.utils.formatEther(stats.utilization.mul(100)));
-  //     setDepositApy(ethers.utils.formatEther(stats.depositApr.mul(1000))); // todo: Should be .mul(100)
-  //     setRewardsApy(ethers.utils.formatEther(stats.rewardsApr.mul(100)));
-  //     setTotalVaultAssets(ethers.utils.formatEther(stats.liquidity));
+      setUtilizationRate(ethers.utils.formatEther(stats.utilization.mul(100)));
+      setDepositApy(ethers.utils.formatEther(stats.depositApr.mul(1000))); // todo: Should be .mul(100)
+      setRewardsApy(ethers.utils.formatEther(stats.rewardsApr.mul(100)));
+      setTotalVaultAssets(ethers.utils.formatEther(stats.liquidity));
 
-  //     if (address) {
-  //       const asset = tokenContractAt(
-  //         ENVIRONMENT.config.pools[0].asset.address
-  //       );
-  //       setMyAsset(asset);
-  //       const assetBalance = await balanceOf(asset, address);
-  //       console.log("assetBalance", assetBalance);
-  //       setMyAssetBalance(ethers.utils.formatEther(assetBalance));
+      if (accounts) {
+        const asset = tokenContractAt(
+          ENVIRONMENT.config.pools[0].asset.address
+        );
+        setMyAsset(asset);
+        const assetBalance = await balanceOf(asset, accounts?.[0]);
+        console.log("assetBalance", assetBalance);
+        setMyAssetBalance(ethers.utils.formatEther(assetBalance));
 
-  //       const vaultSharesBalance = await balanceOf(vaultContract, address);
-  //       console.log("vaultSharesBalance", vaultSharesBalance);
-  //       console.log("address", address);
-  //       setMyVaultSharesBalance(ethers.utils.formatEther(vaultSharesBalance));
-  //     }
-  //   } catch (error) {
-  //     console.error("Error loading vault stats:", error);
-  //   }
-  // }, [
-  //   address,
-  //   contractAt,
-  //   getVaultStats,
-  //   setUtilizationRate,
-  //   setDepositApy,
-  //   setRewardsApy,
-  //   setTotalVaultAssets,
-  //   setMyAssetBalance,
-  //   setMyVaultSharesBalance,
-  //   tokenContractAt,
-  //   balanceOf,
-  // ]);
+        const vaultSharesBalance = await balanceOf(
+          vaultContract,
+          accounts?.[0]
+        );
+        console.log("vaultSharesBalance", vaultSharesBalance);
+        setMyVaultSharesBalance(ethers.utils.formatEther(vaultSharesBalance));
+      }
+    } catch (error) {
+      console.error("Error loading vault stats:", error);
+    }
+  }, [
+    accounts,
+    contractAt,
+    getVaultStats,
+    setUtilizationRate,
+    setDepositApy,
+    setRewardsApy,
+    setTotalVaultAssets,
+    setMyAssetBalance,
+    setMyVaultSharesBalance,
+    tokenContractAt,
+    balanceOf,
+  ]);
+
+  useEffect(() => {
+    loadVaultStats();
+  }, [accounts]);
 
   const fillMaxDeposit = async () => {
     setDepositAmount(myAssetBalance);
   };
 
   const approveAsset = async () => {
-    if (!address) {
+    if (!accounts) {
       alert("Please connect your wallet");
       return;
     }
@@ -114,7 +127,7 @@ export const ActionContainer = () => {
   };
 
   const deposit = async () => {
-    if (!address) {
+    if (!accounts) {
       alert("Please connect your wallet");
       return;
     }
@@ -122,7 +135,7 @@ export const ActionContainer = () => {
     try {
       const amount = ethers.utils.parseUnits(depositAmount ?? "0");
       setDepositAmount("");
-      await depositAsset(vaultContract, amount, address);
+      await depositAsset(vaultContract, amount, accounts?.[0]);
     } catch (error) {
       alert("An error occurred: " + error.message);
     }
@@ -133,7 +146,7 @@ export const ActionContainer = () => {
   };
 
   const redeemAssest = async () => {
-    if (!address) {
+    if (!accounts) {
       alert("Please connect your wallet");
       return;
     }
@@ -141,7 +154,7 @@ export const ActionContainer = () => {
     try {
       const amount = ethers.utils.parseUnits(withdrawAmount ?? "0");
       setDepositAmount("");
-      await redeem(vaultContract, amount, address);
+      await redeem(vaultContract, amount, accounts?.[0]);
     } catch (error) {
       alert("An error occurred: " + error.message);
     }
@@ -284,9 +297,9 @@ export const ActionContainer = () => {
               <div>
                 {formatCurrency(parseFloat(totalVaultAssets))} {assetSymbol}
               </div>
-              <div>{formatCurrency(parseFloat(utilizationRate))}%</div>
-              <div>{formatCurrency(parseFloat(depositApy))}%</div>
-              <div>{pools[0]?.stats?.utilization}%</div>
+              <div>{parseFloat(utilizationRate)?.toFixed(3)}%</div>
+              <div>{parseFloat(depositApy)?.toFixed(3)}%</div>
+              <div>{parseFloat(rewardsApy)?.toFixed(3)}%%</div>
             </div>
           </div>
         </div>

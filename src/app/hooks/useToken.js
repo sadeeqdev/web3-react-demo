@@ -1,18 +1,32 @@
-import { useEffect } from 'react';
-import { BigNumber, ethers } from 'ethers';
-import ERC20 from '../artifacts/ERC20.json';
-import MarketNFT from '../artifacts/MarketNFT.json';
-import { ENVIRONMENT } from '../constants';
-import { useAccount } from './useAccount';
+import { ethers } from "ethers";
+import ERC20 from "../artifacts/ERC20.json";
+import MarketNFT from "../artifacts/MarketNFT.json";
+import { ENVIRONMENT } from "../constants";
+import { hooks } from "../connectors/metaMask";
+
+// import { useAccount } from './useAccount';
 
 export const useToken = () => {
-  const provider = new ethers.providers.StaticJsonRpcProvider(ENVIRONMENT.jsonRpcUrl);
-  const { signer } = useAccount();
-  const name = async contract => {
+  const localprovider = new ethers.providers.StaticJsonRpcProvider(
+    ENVIRONMENT.jsonRpcUrl
+  );
+  const {
+    useChainId,
+    useAccounts,
+    useIsActivating,
+    useIsActive,
+    useProvider,
+    useENSNames,
+  } = hooks;
+  // const { signer } = useAccount();
+  const provider = useProvider();
+  const signer = provider?.getSigner?.();
+
+  const name = async (contract) => {
     return await contract.name();
   };
 
-  const symbol = async contract => {
+  const symbol = async (contract) => {
     return await contract.symbol();
   };
 
@@ -37,14 +51,14 @@ export const useToken = () => {
   };
 
   const ownedTokens = async (contract, account) => {
-    return (await contract.ownedTokens(account)).map(t => t.toString());
+    return (await contract.ownedTokens(account)).map((t) => t.toString());
   };
 
   const transfer = async (contract, to, amount) => {
     await contract.connect(signer).transfer(to, amount);
   };
 
-  const totalSupply = async contract => {
+  const totalSupply = async (contract) => {
     return await contract.totalSupply();
   };
 
@@ -55,7 +69,7 @@ export const useToken = () => {
     } else {
       abi = ERC20.abi;
     }
-    return new ethers.Contract(address, abi, provider);
+    return new ethers.Contract(address, abi, localprovider);
   };
 
   return {
