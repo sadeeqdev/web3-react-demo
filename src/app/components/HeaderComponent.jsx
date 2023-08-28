@@ -7,7 +7,7 @@ import Image from "next/image";
 import { ConnectButton } from "./ConnectButton";
 import { NetworkMenu } from "./NetworkMenu";
 import { WalletModal } from "./WalletModal";
-import { hooks } from "../connectors/metaMask";
+import { hooks, metaMask } from "../connectors/metaMask";
 const { useAccounts } = hooks;
 
 const menuItems = [
@@ -39,6 +39,13 @@ const HeaderComponent = () => {
   const accounts = useAccounts();
 
   const address = accounts?.[0];
+
+  // attempt to connect eagerly on mount
+  useEffect(() => {
+    void metaMask.connectEagerly().catch(() => {
+      console.debug("Failed to connect eagerly to metamask");
+    });
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
