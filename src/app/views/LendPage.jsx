@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
-import { ActionContainer } from "../components/ActionContainer";
+import React from "react";
 import BackIcon from "../assets/icon/back-icon.png";
 import Image from "next/image";
+import { LendContainer } from "../components/LendContainer";
 
 const AppPageTitle = ({ heading, subHeading }) => (
   <div className="h-20 w-full border-b border-t border-gray-600 flex items-center">
@@ -32,7 +32,7 @@ const LendPage = () => {
           Back to Market
         </button>
       </div>
-      <ActionContainer />
+      <LendContainer />
     </div>
   );
 };
