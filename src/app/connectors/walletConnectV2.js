@@ -10,9 +10,9 @@ export const [walletConnectV2, hooks] = initializeConnector(
     new WalletConnectV2({
       actions,
       options: {
-        projectId: "chedda-market",
-        chains: [1, 137, 56],
-        optionalChains: [137, 56],
+        projectId: process.env.walletConnectProjectId,
+        chains: [mainnet],
+        optionalChains,
         showQrModal: true,
       },
     })

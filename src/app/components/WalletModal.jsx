@@ -8,7 +8,6 @@ import { WalletConnect as WalletConnectV2 } from "@web3-react/walletconnect-v2";
 import { metaMask } from "../connectors/metaMask";
 import { walletConnectV2 } from "../connectors/WalletConnectV2";
 import { getAddChainParameters } from "../chains";
-import { on } from "stream";
 
 export const WalletModal = ({ isOpen, onClose }) => {
   const [error, setError] = useState("");
@@ -65,7 +64,7 @@ export const WalletModal = ({ isOpen, onClose }) => {
             <Image src={MetamaskLogo} alt="Metamask Logo" className="w-3/5" />
           </button>
           <button
-            onClick={() => connectWallet(walletConnectV2, 137)}
+            onClick={() => connectWallet(walletConnectV2)}
             className={`px-4 py-2 h-20 text-2xl flex justify-center items-center text-white bg-gray-300 rounded focus:outline-none hover:bg-gray-200`}
           >
             <Image
