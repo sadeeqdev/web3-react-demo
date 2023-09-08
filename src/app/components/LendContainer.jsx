@@ -37,8 +37,8 @@ export const LendContainer = () => {
   const [totalVaultAssets, setTotalVaultAssets] = useState(0);
   const [myAssetBalance, setMyAssetBalance] = useState(0);
   const [myVaultSharesBalance, setMyVaultSharesBalance] = useState(0);
-  const [depositAmount, setDepositAmount] = useState();
-  const [withdrawAmount, setWithdrawAmount] = useState();
+  const [depositAmount, setDepositAmount] = useState("");
+  const [withdrawAmount, setWithdrawAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const switchDepositCheddaTab = (isDeposit) => {
     setIsDepositCheddaTab(isDeposit);
@@ -80,6 +80,20 @@ export const LendContainer = () => {
         console.log("vaultSharesBalance", vaultSharesBalance);
         setMyVaultSharesBalance(ethers.utils.formatEther(vaultSharesBalance));
       }
+
+      vaultContract.on("Deposit", async (from, to, amount, shares, event) => {
+        console.log("deposit posted: ", from, to, amount, shares);
+        if (from.toLowerCase() == accounts?.[0]?.toLowerCase()) {
+          loadVaultStats();
+        }
+      });
+
+      vaultContract.on("Withdraw", async (from, to, amount, shares, event) => {
+        console.log("deposit posted: ", from, to, amount, shares);
+        if (from.toLowerCase() == accounts?.[0]?.toLowerCase()) {
+          loadVaultStats();
+        }
+      });
     } catch (error) {
       console.error("Error loading vault stats:", error);
     }
