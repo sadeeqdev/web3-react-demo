@@ -1,6 +1,6 @@
 import React from "react";
 import HeaderComponent from "./components/HeaderComponent";
-import LendPage from "./views/LendPage";
+import LendPage from "./pages/LendPage";
 
 function Home() {
   return (

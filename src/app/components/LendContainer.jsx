@@ -8,13 +8,7 @@ import { hooks } from "../connectors/metaMask";
 import { useToken } from "../hooks/useToken";
 import { useCheddaBaseTokenVault } from "../hooks/useCheddaBaseTokenVault";
 import { LoadingModal } from "./LoadingModal";
-
-function formatCurrency(value) {
-  if (typeof value !== "number") {
-    return "";
-  }
-  return value.toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
+import { formatCurrency } from "../utils/formatCurrency";
 
 const pool = {
   asset: {
