@@ -7,8 +7,8 @@ import Image from "next/image";
 import { ConnectButton } from "./ConnectButton";
 import { NetworkMenu } from "./NetworkMenu";
 import { WalletModal } from "./WalletModal";
-import { hooks, metaMask } from "../connectors/metaMask";
-const { useAccounts } = hooks;
+import { metamaskHooks, metaMask } from "../connectors/metaMask";
+const { useAccounts } = metamaskHooks;
 
 const menuItems = [
   {

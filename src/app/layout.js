@@ -1,5 +1,6 @@
 import "./globals.scss";
 import { Inter } from "next/font/google";
+import { AppProviders } from "./components/AppProviders";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,7 +15,9 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="icon" href="./favicon.ico" />
       </head>
-      <body className={`${inter.className} bg-no-repeat`}>{children}</body>
+      <body className={`${inter.className} bg-no-repeat`}>
+        <AppProviders>{children}</AppProviders>
+      </body>
     </html>
   );
 }

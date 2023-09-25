@@ -20,7 +20,7 @@ function isExtendedChainInformation(chainInformation) {
   return !!chainInformation.nativeCurrency;
 }
 
-export function getAddChainParameters(chainId) {
+function getAddChainParameters(chainId) {
   const chainInformation = CHAINS[chainId];
   if (isExtendedChainInformation(chainInformation)) {
     return {
@@ -39,6 +39,7 @@ const getInfuraUrlFor = (network) =>
   process.env.infuraKey
     ? `https://${network}.infura.io/v3/${process.env.infuraKey}`
     : undefined;
+
 const getAlchemyUrlFor = (network) =>
   process.env.alchemyKey
     ? `https://${network}.alchemyapi.io/v2/${process.env.alchemyKey}`
@@ -110,16 +111,6 @@ export const TESTNET_CHAINS = {
     name: "Arbitrum Goerli",
     nativeCurrency: ETH,
     blockExplorerUrls: ["https://testnet.arbiscan.io"],
-  },
-  42261: {
-    urls: ["https://testnet.emerald.oasis.dev/"].filter(Boolean),
-    name: "Oasis Emerald Testnet",
-    nativeCurrency: {
-      name: "Rose",
-      symbol: "ROSE",
-      decimals: 18,
-    },
-    blockExplorerUrls: ["https://testnet.explorer.emerald.oasis.dev/"],
   },
   80001: {
     urls: [getInfuraUrlFor("polygon-mumbai")].filter(Boolean),

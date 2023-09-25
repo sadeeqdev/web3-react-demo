@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import ERC20 from "../artifacts/ERC20.json";
 import MarketNFT from "../artifacts/MarketNFT.json";
 import { ENVIRONMENT } from "../constants";
-import { hooks } from "../connectors/metaMask";
+import { metamaskHooks } from "../connectors/metaMask";
 
 // import { useAccount } from './useAccount';
 
@@ -10,14 +10,7 @@ export const useToken = () => {
   const localprovider = new ethers.providers.StaticJsonRpcProvider(
     ENVIRONMENT.jsonRpcUrl
   );
-  const {
-    useChainId,
-    useAccounts,
-    useIsActivating,
-    useIsActive,
-    useProvider,
-    useENSNames,
-  } = hooks;
+  const { useProvider } = metamaskHooks;
   // const { signer } = useAccount();
   const provider = useProvider();
   const signer = provider?.getSigner?.();

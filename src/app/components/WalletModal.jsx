@@ -2,12 +2,12 @@ import React, { useCallback, useState } from "react";
 import Image from "next/image";
 import MetamaskLogo from "../assets/logos/metamask-logo.svg";
 import WalletConnectLogo from "../assets/logos/walletconnect-logo.png";
-
 import { GnosisSafe } from "@web3-react/gnosis-safe";
-import { WalletConnect as WalletConnectV2 } from "@web3-react/walletconnect-v2";
+import { WalletConnect } from "@web3-react/walletconnect-v2";
 import { metaMask } from "../connectors/metaMask";
 import { walletConnectV2 } from "../connectors/WalletConnectV2";
 import { getAddChainParameters } from "../chains";
+import { WalletConnectV2Card } from "./WalletConnectCard";
 
 export const WalletModal = ({ isOpen, onClose }) => {
   const [error, setError] = useState("");
@@ -18,8 +18,8 @@ export const WalletModal = ({ isOpen, onClose }) => {
       try {
         if (desiredChainId === -1 || connector instanceof GnosisSafe) {
           await connector.activate();
-        } else if (connector instanceof WalletConnectV2) {
-          await connector.activate(desiredChainId);
+        } else if (connector instanceof WalletConnect) {
+          await connector.activate(1);
         } else {
           await connector.activate(getAddChainParameters(desiredChainId));
         }
@@ -64,7 +64,7 @@ export const WalletModal = ({ isOpen, onClose }) => {
             <Image src={MetamaskLogo} alt="Metamask Logo" className="w-3/5" />
           </button>
           <button
-            onClick={() => connectWallet(walletConnectV2)}
+            onClick={() => connectWallet(walletConnectV2, 1)}
             className={`px-4 py-2 h-20 text-2xl flex justify-center items-center text-white bg-gray-300 rounded focus:outline-none hover:bg-gray-200`}
           >
             <Image
@@ -73,6 +73,7 @@ export const WalletModal = ({ isOpen, onClose }) => {
               className="w-3/5"
             />
           </button>
+          <WalletConnectV2Card />
         </div>
       </div>
     </div>

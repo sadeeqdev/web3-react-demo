@@ -4,11 +4,12 @@ import CoinLogo from "../assets/logos/usdc-logo.png";
 import Image from "next/image";
 import { ethers } from "ethers";
 import { ENVIRONMENT } from "../constants";
-import { hooks } from "../connectors/metaMask";
+import { metamaskHooks } from "../connectors/metaMask";
 import { useToken } from "../hooks/useToken";
 import { useCheddaBaseTokenVault } from "../hooks/useCheddaBaseTokenVault";
 import { LoadingModal } from "./LoadingModal";
 import { formatCurrency } from "../utils/formatCurrency";
+import { useAccount } from "../hooks/useAccount";
 
 const pool = {
   asset: {
@@ -40,13 +41,15 @@ export const LendContainer = () => {
   const { contractAt, getVaultStats, depositAsset, redeem } =
     useCheddaBaseTokenVault();
   const { approve, balanceOf, totalSupply, tokenContractAt } = useToken();
-  const { useAccounts } = hooks;
+  const { useAccounts } = metamaskHooks;
 
   const accounts = useAccounts();
 
+  const { provider, account } = useAccount();
+
   const loadVaultStats = useCallback(async () => {
-    console.log("accounts", accounts);
-    console.log("accounts 1", accounts?.[0]);
+    console.log("provider >>>>>", account);
+    console.log("accounts 1", useAccounts);
     try {
       const vaultContract = contractAt(ENVIRONMENT.config.pools[0].address);
       setVaultContract(vaultContract);
