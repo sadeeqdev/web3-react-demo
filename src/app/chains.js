@@ -20,7 +20,7 @@ function isExtendedChainInformation(chainInformation) {
   return !!chainInformation.nativeCurrency;
 }
 
-function getAddChainParameters(chainId) {
+export function getAddChainParameters(chainId) {
   const chainInformation = CHAINS[chainId];
   if (isExtendedChainInformation(chainInformation)) {
     return {

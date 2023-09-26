@@ -8,6 +8,7 @@ import { ConnectButton } from "./ConnectButton";
 import { NetworkMenu } from "./NetworkMenu";
 import { WalletModal } from "./WalletModal";
 import { metamaskHooks, metaMask } from "../connectors/metaMask";
+import { useVaultStats } from "../hooks/useVaultStats";
 const { useAccounts } = metamaskHooks;
 
 const menuItems = [
@@ -37,6 +38,7 @@ const HeaderComponent = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const accounts = useAccounts();
+  const { pools } = useVaultStats();
 
   const address = accounts?.[0];
 
@@ -64,6 +66,7 @@ const HeaderComponent = () => {
 
   const handleToggleModal = () => {
     setIsOpenModal(!isOpenModal);
+    console.log("pools", pools);
   };
 
   return (

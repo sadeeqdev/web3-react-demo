@@ -1,22 +1,32 @@
 import { useEffect, useState } from "react";
 import { BigNumber, ethers } from "ethers";
-import { usePriceOracle } from "./usePriceOracle";
-import { useCheddaBaseTokenVault } from "./useCheddaBaseTokenVault";
 import { ENVIRONMENT } from "../constants";
+import { Chedda } from "chedda-sdk";
+
+import MultiAssetPriceOracle from "../artifacts/MultiAssetPriceOracle.json";
+import CheddaBaseTokenVault from "../artifacts/CheddaBaseTokenVault.json";
 
 export const useVaultStats = () => {
   const [pools, setPools] = useState([]);
-  const { getAssetPrice } = usePriceOracle();
-  const { contractAt, getVaultStats } = useCheddaBaseTokenVault();
+  const chedda = new Chedda(ENVIRONMENT.webSocketUrl);
+  const vault = chedda.vault();
+  const priceOracle = chedda.priceOracle();
   const environment = ENVIRONMENT;
   useEffect(() => {
     const loadStats = async (pool) => {
       try {
-        const contract = contractAt(pool.address);
+        const contract = vault.contractAt(
+          pool.address,
+          CheddaBaseTokenVault.abi
+        );
         console.log("contract", contract);
-        const price = await getAssetPrice(pool.asset.address);
+        const price = await priceOracle.getAssetPrice(
+          pool.asset.address,
+          MultiAssetPriceOracle,
+          pool.asset.address
+        );
         console.log("price", price);
-        const stats = await getVaultStats(contract);
+        const stats = await vault.getVaultStats(contract);
         console.log("stats", stats);
         const formattedTotal = ethers.utils.formatEther(
           stats.liquidity.mul(price).div(BigNumber.from(10).pow(18))
