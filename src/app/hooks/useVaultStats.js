@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { ENVIRONMENT } from "../constants";
-import { Chedda } from "chedda-sdk";
+import { useCheddaProvider } from "./useCheddaProvider";
 
 import MultiAssetPriceOracle from "../artifacts/MultiAssetPriceOracle.json";
 import CheddaBaseTokenVault from "../artifacts/CheddaBaseTokenVault.json";
 
 export const useVaultStats = () => {
   const [pools, setPools] = useState([]);
-  const chedda = new Chedda(ENVIRONMENT.webSocketUrl);
+  const chedda = useCheddaProvider();
   const vault = chedda.vault();
   const priceOracle = chedda.priceOracle();
   const environment = ENVIRONMENT;

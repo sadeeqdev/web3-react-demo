@@ -1,15 +1,17 @@
 "use-client";
+
 import React, { useState, useEffect, useCallback } from "react";
 import CoinLogo from "../assets/logos/usdc-logo.png";
 import Image from "next/image";
+import CheddaBaseTokenVault from "../artifacts/CheddaBaseTokenVault.json";
+import ERC20 from "../artifacts/ERC20.json";
+
 import { ethers } from "ethers";
 import { ENVIRONMENT } from "../constants";
 import { metamaskHooks } from "../connectors/metaMask";
-import { useToken } from "../hooks/useToken";
-import { useCheddaBaseTokenVault } from "../hooks/useCheddaBaseTokenVault";
 import { LoadingModal } from "./LoadingModal";
 import { formatCurrency } from "../utils/formatCurrency";
-import { useAccount } from "../hooks/useAccount";
+import { useCheddaSdk } from "../hooks/useCheddaSdk";
 
 const pool = {
   asset: {
@@ -38,22 +40,17 @@ export const LendContainer = () => {
   const switchDepositCheddaTab = (isDeposit) => {
     setIsDepositCheddaTab(isDeposit);
   };
-  const { contractAt, getVaultStats, depositAsset, redeem } =
-    useCheddaBaseTokenVault();
-  const { approve, balanceOf, totalSupply, tokenContractAt } = useToken();
   const { useAccounts } = metamaskHooks;
-
   const accounts = useAccounts();
-
-  const { provider, account } = useAccount();
-
+  const { vault, token } = useCheddaSdk();
   const loadVaultStats = useCallback(async () => {
-    console.log("provider >>>>>", account);
-    console.log("accounts 1", useAccounts);
     try {
-      const vaultContract = contractAt(ENVIRONMENT.config.pools[0].address);
+      const vaultContract = vault.contractAt(
+        ENVIRONMENT.config.pools[0].address,
+        CheddaBaseTokenVault.abi
+      );
       setVaultContract(vaultContract);
-      const stats = await getVaultStats(vaultContract);
+      const stats = await vault.getVaultStats(vaultContract);
       console.log("vaultContract", stats);
 
       setUtilizationRate(ethers.utils.formatEther(stats.utilization.mul(100)));
@@ -62,15 +59,16 @@ export const LendContainer = () => {
       setTotalVaultAssets(ethers.utils.formatEther(stats.liquidity));
 
       if (accounts) {
-        const asset = tokenContractAt(
-          ENVIRONMENT.config.pools[0].asset.address
+        const asset = token.contractAt(
+          ENVIRONMENT.config.pools[0].asset.address,
+          ERC20.abi
         );
         setMyAsset(asset);
-        const assetBalance = await balanceOf(asset, accounts?.[0]);
+        const assetBalance = await token.balanceOf(asset, accounts?.[0]);
         console.log("assetBalance", assetBalance);
         setMyAssetBalance(ethers.utils.formatEther(assetBalance));
 
-        const vaultSharesBalance = await balanceOf(
+        const vaultSharesBalance = await token.balanceOf(
           vaultContract,
           accounts?.[0]
         );
@@ -96,16 +94,12 @@ export const LendContainer = () => {
     }
   }, [
     accounts,
-    contractAt,
-    getVaultStats,
     setUtilizationRate,
     setDepositApy,
     setRewardsApy,
     setTotalVaultAssets,
     setMyAssetBalance,
     setMyVaultSharesBalance,
-    tokenContractAt,
-    balanceOf,
   ]);
 
   useEffect(() => {
@@ -124,11 +118,11 @@ export const LendContainer = () => {
 
     try {
       setIsLoading(true);
-      const totaltokenSupply = await totalSupply(myAsset);
+      const totaltokenSupply = await token.totalSupply(myAsset);
       console.log("myAsset", myAsset);
       console.log("vaultContract.address", vaultContract.address);
       console.log("totaltokenSupply", totaltokenSupply);
-      const txHash = await approve(
+      const txHash = await token.approve(
         myAsset,
         vaultContract.address,
         totaltokenSupply
@@ -152,7 +146,7 @@ export const LendContainer = () => {
       setIsLoading(true);
       const amount = ethers.utils.parseUnits(depositAmount ?? "0");
       setDepositAmount("");
-      await depositAsset(vaultContract, amount, accounts?.[0]);
+      await vault.depositAsset(vaultContract, amount, accounts?.[0]);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -174,7 +168,7 @@ export const LendContainer = () => {
       setIsLoading(true);
       const amount = ethers.utils.parseUnits(withdrawAmount ?? "0");
       setDepositAmount("");
-      await redeem(vaultContract, amount, accounts?.[0]);
+      await vault.redeem(vaultContract, amount, accounts?.[0]);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
