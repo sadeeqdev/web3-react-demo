@@ -14,18 +14,12 @@ function ChainSelect({ activeChainId, switchChain, chainIds }) {
       }}
       disabled={switchChain === undefined}
     >
-      <option hidden disabled selected={activeChainId === undefined}>
+      <option hidden disabled value="">
         Select chain
       </option>
-      <option value={-1} selected={activeChainId === -1}>
-        Default
-      </option>
+      <option value={-1}>Default</option>
       {chainIds.map((chainId) => (
-        <option
-          key={chainId}
-          value={chainId}
-          selected={chainId === activeChainId}
-        >
+        <option key={chainId} value={chainId}>
           {CHAINS[chainId]?.name ?? chainId}
         </option>
       ))}
