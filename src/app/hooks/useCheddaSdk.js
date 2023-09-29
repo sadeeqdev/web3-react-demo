@@ -8,10 +8,7 @@ export const useCheddaSdk = () => {
   const chedda = new Chedda(ENVIRONMENT.webSocketUrl);
   const provider = useProvider();
   const signer = provider?.getSigner?.();
-
-  const vault = chedda.vault(signer);
-  const token = chedda.token(signer);
   const priceOracle = chedda.priceOracle();
 
-  return { vault, token, priceOracle };
+  return { chedda, signer, priceOracle };
 };

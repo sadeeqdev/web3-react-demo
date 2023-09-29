@@ -23,7 +23,6 @@ export const LendContainer = () => {
   const vaultTokenSymbol = "Chedda";
   const assetName = "USD Coin";
   const [isDepositCheddaTab, setIsDepositCheddaTab] = useState(true);
-  const [myAsset, setMyAsset] = useState("");
   const [vaultContract, setVaultContract] = useState();
   const [isApproved, setIsApproved] = useState(false);
   const [utilizationRate, setUtilizationRate] = useState(0);
@@ -40,15 +39,11 @@ export const LendContainer = () => {
   };
   const { useAccounts } = metamaskHooks;
   const accounts = useAccounts();
-  const { vault, token } = useCheddaSdk();
+  const { chedda, signer, token } = useCheddaSdk();
   const loadVaultStats = useCallback(async () => {
     try {
-      const vaultContract = vault.contractAt(
-        ENVIRONMENT.config.pools[0].address
-      );
-      setVaultContract(vaultContract);
+      const vault = chedda.vault(ENVIRONMENT.config.pools[0].address, signer);
       const stats = await vault.getVaultStats();
-      console.log("vaultContract", stats);
 
       setUtilizationRate(ethers.utils.formatEther(stats.utilization.mul(100)));
       setDepositApy(ethers.utils.formatEther(stats.depositApr.mul(1000))); // todo: Should be .mul(100)
@@ -56,28 +51,23 @@ export const LendContainer = () => {
       setTotalVaultAssets(ethers.utils.formatEther(stats.liquidity));
 
       if (accounts) {
-        const asset = token.contractAt(
-          ENVIRONMENT.config.pools[0].asset.address
+        const token = chedda.token(
+          ENVIRONMENT.config.pools[0].asset.address,
+          signer
         );
-        setMyAsset(asset);
         const assetBalance = await token.balanceOf(accounts?.[0]);
-        console.log("assetBalance", assetBalance);
         setMyAssetBalance(ethers.utils.formatEther(assetBalance));
-
         const vaultSharesBalance = await vault.balanceOf(accounts?.[0]);
-        console.log("vaultSharesBalance", vaultSharesBalance);
         setMyVaultSharesBalance(ethers.utils.formatEther(vaultSharesBalance));
       }
 
-      vaultContract.on("Deposit", async (from, to, amount, shares, event) => {
-        console.log("deposit posted: ", from, to, amount, shares);
+      vault.contract.on("Deposit", async (from, to, amount, shares, event) => {
         if (from.toLowerCase() == accounts?.[0]?.toLowerCase()) {
           loadVaultStats();
         }
       });
 
-      vaultContract.on("Withdraw", async (from, to, amount, shares, event) => {
-        console.log("deposit posted: ", from, to, amount, shares);
+      vault.contract.on("Withdraw", async (from, to, amount, shares, event) => {
         if (from.toLowerCase() == accounts?.[0]?.toLowerCase()) {
           loadVaultStats();
         }
@@ -111,18 +101,15 @@ export const LendContainer = () => {
 
     try {
       setIsLoading(true);
-      token.contractAt(ENVIRONMENT.config.pools[0].asset.address);
-      const totaltokenSupply = await token.totalSupply();
-      console.log("myAsset", myAsset);
-      console.log("vaultContract.address", vaultContract.address);
-      console.log("totaltokenSupply", totaltokenSupply);
-      const txHash = await token.approve(
-        vaultContract.address,
-        totaltokenSupply
+      const token = chedda.token(
+        ENVIRONMENT.config.pools[0].asset.address,
+        signer
       );
+      const vault = chedda.vault(ENVIRONMENT.config.pools[0].address, signer);
+      const totaltokenSupply = await token.totalSupply();
+      await token.approve(vault.contract.address, totaltokenSupply);
       setIsApproved(true);
       setIsLoading(false);
-      console.log("Event", txHash);
     } catch (error) {
       setIsLoading(false);
       alert("An error occurred: " + error.message);
@@ -137,7 +124,7 @@ export const LendContainer = () => {
 
     try {
       setIsLoading(true);
-      vault.contractAt(ENVIRONMENT.config.pools[0].address);
+      const vault = chedda.vault(ENVIRONMENT.config.pools[0].address, signer);
       const amount = ethers.utils.parseUnits(depositAmount ?? "0");
       setDepositAmount("");
       await vault.depositAsset(amount, accounts?.[0]);
@@ -160,7 +147,7 @@ export const LendContainer = () => {
 
     try {
       setIsLoading(true);
-      vault.contractAt(ENVIRONMENT.config.pools[0].address);
+      const chedda = chedda.vault(ENVIRONMENT.config.pools[0].address, signer);
       const amount = ethers.utils.parseUnits(withdrawAmount ?? "0");
       setDepositAmount("");
       await vault.redeem(amount, accounts?.[0]);

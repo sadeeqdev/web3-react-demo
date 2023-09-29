@@ -7,12 +7,12 @@ import MultiAssetPriceOracle from "../artifacts/MultiAssetPriceOracle.json";
 
 export const useVaultStats = () => {
   const [pools, setPools] = useState([]);
-  const { vault, priceOracle } = useCheddaSdk();
+  const { chedda, signer, priceOracle } = useCheddaSdk();
   const environment = ENVIRONMENT;
   useEffect(() => {
     const loadStats = async (pool) => {
       try {
-        vault.contractAt(pool.address);
+        const vault = chedda.vault(pool.address, signer);
         const price = await priceOracle.getAssetPrice(
           pool.asset.address,
           MultiAssetPriceOracle,
