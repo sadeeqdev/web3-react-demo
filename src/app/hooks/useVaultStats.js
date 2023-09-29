@@ -1,45 +1,33 @@
 import { useEffect, useState } from "react";
 import { BigNumber, ethers } from "ethers";
 import { ENVIRONMENT } from "../constants";
-import { useCheddaProvider } from "./useCheddaProvider";
+import { useCheddaSdk } from "./useCheddaSdk";
 
 import MultiAssetPriceOracle from "../artifacts/MultiAssetPriceOracle.json";
-import CheddaBaseTokenVault from "../artifacts/CheddaBaseTokenVault.json";
 
 export const useVaultStats = () => {
   const [pools, setPools] = useState([]);
-  const chedda = useCheddaProvider();
-  const vault = chedda.vault();
-  const priceOracle = chedda.priceOracle();
+  const { vault, priceOracle } = useCheddaSdk();
   const environment = ENVIRONMENT;
   useEffect(() => {
     const loadStats = async (pool) => {
       try {
-        const contract = vault.contractAt(
-          pool.address,
-          CheddaBaseTokenVault.abi
-        );
-        console.log("contract", contract);
+        vault.contractAt(pool.address);
         const price = await priceOracle.getAssetPrice(
           pool.asset.address,
           MultiAssetPriceOracle,
-          pool.asset.address
+          ENVIRONMENT.config.contracts.PriceFeed
         );
-        console.log("price", price);
-        const stats = await vault.getVaultStats(contract);
-        console.log("stats", stats);
+        const stats = await vault.getVaultStats();
         const formattedTotal = ethers.utils.formatEther(
           stats.liquidity.mul(price).div(BigNumber.from(10).pow(18))
         );
-        console.log("formattedTotal", formattedTotal);
         const formattedUtilization = ethers.utils.formatEther(
           stats.utilization.mul(100)
         );
-        console.log("formattedUtilization", formattedUtilization);
         const formattedApr = ethers.utils.formatEther(
           stats.depositApr.mul(1000)
         );
-        console.log("formattedApr", formattedApr);
         return {
           ...pool,
           stats: {

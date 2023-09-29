@@ -3,8 +3,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import CoinLogo from "../assets/logos/usdc-logo.png";
 import Image from "next/image";
-import CheddaBaseTokenVault from "../artifacts/CheddaBaseTokenVault.json";
-import ERC20 from "../artifacts/ERC20.json";
 
 import { ethers } from "ethers";
 import { ENVIRONMENT } from "../constants";
@@ -46,11 +44,10 @@ export const LendContainer = () => {
   const loadVaultStats = useCallback(async () => {
     try {
       const vaultContract = vault.contractAt(
-        ENVIRONMENT.config.pools[0].address,
-        CheddaBaseTokenVault.abi
+        ENVIRONMENT.config.pools[0].address
       );
       setVaultContract(vaultContract);
-      const stats = await vault.getVaultStats(vaultContract);
+      const stats = await vault.getVaultStats();
       console.log("vaultContract", stats);
 
       setUtilizationRate(ethers.utils.formatEther(stats.utilization.mul(100)));
@@ -60,18 +57,14 @@ export const LendContainer = () => {
 
       if (accounts) {
         const asset = token.contractAt(
-          ENVIRONMENT.config.pools[0].asset.address,
-          ERC20.abi
+          ENVIRONMENT.config.pools[0].asset.address
         );
         setMyAsset(asset);
-        const assetBalance = await token.balanceOf(asset, accounts?.[0]);
+        const assetBalance = await token.balanceOf(accounts?.[0]);
         console.log("assetBalance", assetBalance);
         setMyAssetBalance(ethers.utils.formatEther(assetBalance));
 
-        const vaultSharesBalance = await token.balanceOf(
-          vaultContract,
-          accounts?.[0]
-        );
+        const vaultSharesBalance = await vault.balanceOf(accounts?.[0]);
         console.log("vaultSharesBalance", vaultSharesBalance);
         setMyVaultSharesBalance(ethers.utils.formatEther(vaultSharesBalance));
       }
@@ -118,12 +111,12 @@ export const LendContainer = () => {
 
     try {
       setIsLoading(true);
-      const totaltokenSupply = await token.totalSupply(myAsset);
+      token.contractAt(ENVIRONMENT.config.pools[0].asset.address);
+      const totaltokenSupply = await token.totalSupply();
       console.log("myAsset", myAsset);
       console.log("vaultContract.address", vaultContract.address);
       console.log("totaltokenSupply", totaltokenSupply);
       const txHash = await token.approve(
-        myAsset,
         vaultContract.address,
         totaltokenSupply
       );
@@ -144,9 +137,10 @@ export const LendContainer = () => {
 
     try {
       setIsLoading(true);
+      vault.contractAt(ENVIRONMENT.config.pools[0].address);
       const amount = ethers.utils.parseUnits(depositAmount ?? "0");
       setDepositAmount("");
-      await vault.depositAsset(vaultContract, amount, accounts?.[0]);
+      await vault.depositAsset(amount, accounts?.[0]);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -166,9 +160,10 @@ export const LendContainer = () => {
 
     try {
       setIsLoading(true);
+      vault.contractAt(ENVIRONMENT.config.pools[0].address);
       const amount = ethers.utils.parseUnits(withdrawAmount ?? "0");
       setDepositAmount("");
-      await vault.redeem(vaultContract, amount, accounts?.[0]);
+      await vault.redeem(amount, accounts?.[0]);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);

@@ -8,8 +8,8 @@ import { ConnectButton } from "./ConnectButton";
 import { NetworkMenu } from "./NetworkMenu";
 import { WalletModal } from "./WalletModal";
 import { metamaskHooks, metaMask } from "../connectors/metaMask";
-import { useVaultStats } from "../hooks/useVaultStats";
 const { useAccounts } = metamaskHooks;
+import { useVaultStats } from "../hooks/useVaultStats";
 
 const menuItems = [
   {
@@ -38,9 +38,9 @@ const HeaderComponent = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
   const accounts = useAccounts();
-  const { pools } = useVaultStats();
 
   const address = accounts?.[0];
+  const { pools } = useVaultStats();
 
   // attempt to connect eagerly on mount
   useEffect(() => {
@@ -48,6 +48,10 @@ const HeaderComponent = () => {
       console.debug("Failed to connect eagerly to metamask");
     });
   }, []);
+
+  useEffect(() => {
+    console.log("pools", pools);
+  }, [pools]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -66,7 +70,6 @@ const HeaderComponent = () => {
 
   const handleToggleModal = () => {
     setIsOpenModal(!isOpenModal);
-    console.log("pools", pools);
   };
 
   return (
