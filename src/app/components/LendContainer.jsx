@@ -147,7 +147,7 @@ export const LendContainer = () => {
 
     try {
       setIsLoading(true);
-      const chedda = chedda.vault(ENVIRONMENT.config.pools[0].address, signer);
+      const vault = chedda.vault(ENVIRONMENT.config.pools[0].address, signer);
       const amount = ethers.utils.parseUnits(withdrawAmount ?? "0");
       setDepositAmount("");
       await vault.redeem(amount, accounts?.[0]);
