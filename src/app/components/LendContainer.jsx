@@ -23,7 +23,6 @@ export const LendContainer = () => {
   const vaultTokenSymbol = "Chedda";
   const assetName = "USD Coin";
   const [isDepositCheddaTab, setIsDepositCheddaTab] = useState(true);
-  const [vaultContract, setVaultContract] = useState();
   const [isApproved, setIsApproved] = useState(false);
   const [utilizationRate, setUtilizationRate] = useState(0);
   const [depositApy, setDepositApy] = useState(0);

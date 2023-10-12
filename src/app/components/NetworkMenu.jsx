@@ -14,7 +14,6 @@ export const NetworkMenu = () => {
 
   const onNetworkSelected = (name) => {
     // Implement the logic for handling network selection
-    // For example, update the selected network state
     console.log(`Selected network: ${name}`);
   };
 
@@ -28,10 +27,8 @@ export const NetworkMenu = () => {
   };
 
   const networkList = [
-    // Define your network objects here
     { name: "Polygon", icon: PolygonLogo },
     { name: "Oasis", icon: OasisLogo },
-    // ...
   ];
 
   const onDocumentClick = (event) => {

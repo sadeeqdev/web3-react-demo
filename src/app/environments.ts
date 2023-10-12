@@ -23,18 +23,6 @@ export const ENVIRONMENT_2 = {
       GaugeController: "0xb1bE9510691DfAa3D73C3A6C17E494EEC9899E4F",
       NFT: "",
     },
-    networkParams: {
-      chainId: "0xA515",
-      chainName: "Oasis Emerald Testnet",
-      nativeCurrency: {
-        name: "Rose",
-        symbol: "ROSE",
-        decimals: 18,
-        image: "",
-      },
-      rpcUrls: ["https://testnet.emerald.oasis.dev/"],
-      blockExplorerUrls: ["https://testnet.explorer.emerald.oasis.dev/"],
-    },
     pools: [
       {
         name: "USDC/ROSE Pool",
